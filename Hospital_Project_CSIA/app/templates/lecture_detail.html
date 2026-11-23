@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ lecture.title if lecture else 'Lecture unavailable' }} | Hospital Health Education{% endblock %}
+{% block content %}
+<div class="page-shell detail-page">
+  <p class="breadcrumb"><a href="{{ url_for('home') }}">Home</a> / <a href="{{ url_for('lecture_list') }}">Lectures</a> / Lecture detail</p>
+  {% if database_error %}<p class="notice" role="status">Lecture details are temporarily unavailable. Check the MySQL settings in the README.</p>
+  {% elif lecture %}
+    <div class="detail-layout">
+      <section class="detail-main">
+        {% if lecture.video_url %}<video class="lecture-video" controls preload="metadata" aria-label="Video: {{ lecture.title }}"><source src="{{ lecture.video_url }}" type="video/mp4">Your browser does not support HTML5 video.</video>
+        {% else %}<div class="video-placeholder"><span class="play-icon"></span><p>Video not available yet</p><small>Add this lecture's video under <code>app/static/videos/</code>.</small></div>{% endif %}
+        <article class="detail-card">
+          <div class="detail-title-row"><div><h1>{{ lecture.title }}</h1><p class="speaker-line">{{ lecture.speaker }} <span>·</span> {{ lecture.department }}</p></div><time datetime="{{ lecture.lecture_date.isoformat() }}">{{ lecture.lecture_date.strftime('%b %d, %Y') }}</time></div>
+          <span class="topic-chip category-detail">{{ lecture.category }}</span>
+          {% if lecture.tags %}<div class="tag-list">{% for tag in lecture.tags.split(', ') %}<span class="topic-chip">{{ tag|title }}</span>{% endfor %}</div>{% endif %}
+          <h2>Description</h2><p class="description">{{ lecture.description }}</p>
+        </article>
+      </section>
+      <aside class="related-column">
+        <h2>Related Lectures</h2>
+        {% if related_lectures %}
+          <div class="related-list">
+            {% for related in related_lectures %}
+              <a class="related-card" href="{{ url_for('lecture_detail', lecture_id=related.lecture_id) }}">
+                <div class="related-thumb" aria-hidden="true"><span class="play-icon"></span></div>
+                <div class="related-card-body">
+                  <h3>{{ related.title }}</h3>
+                  <p>{{ related.department }} · {{ related.speaker }}</p>
+                  <span>{{ related.category }}</span>
+                </div>
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p>No related lectures available.</p>
+        {% endif %}
+      </aside>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

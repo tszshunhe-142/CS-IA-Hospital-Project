@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% set active_page = 'lectures' %}
+{% block title %}Lectures | Hospital Health Education{% endblock %}
+{% block content %}
+<div class="page-shell library-page">
+  <p class="breadcrumb"><a href="{{ url_for('home') }}">Home</a> / Lectures</p>
+  <div class="library-heading"><div><h1>Lectures</h1><p>Search and explore talks from hospital educators.</p></div></div>
+
+  {% if database_message %}<p class="notice" role="status">{{ database_message }}</p>{% endif %}
+
+  <form class="lecture-search-form" id="search-form" action="{{ url_for('lecture_list') }}" method="get">
+    <label class="sr-only" for="lecture-query">Search health lectures</label>
+    <input id="lecture-query" type="search" name="q" value="{{ query }}" placeholder="Search health lectures" autocomplete="off">
+    <button class="primary-button" type="submit">Search</button>
+
+    <fieldset class="filter-panel">
+      <legend>Filters</legend>
+      <label>Department
+        <select name="department">
+          <option value="">All departments</option>
+          {% for option in departments %}<option value="{{ option }}" {% if department|lower == option|lower %}selected{% endif %}>{{ option }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Category
+        <select name="category">
+          <option value="">All categories</option>
+          {% for option in categories %}<option value="{{ option }}" {% if category|lower == option|lower %}selected{% endif %}>{{ option }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>From date<input type="date" name="date_from" value="{{ date_from }}"></label>
+      <label>To date<input type="date" name="date_to" value="{{ date_to }}"></label>
+      <div class="filter-actions">
+        <a class="outline-button" href="{{ url_for('lecture_list') }}">Clear all</a>
+        <button class="primary-button" type="submit">Apply filters</button>
+      </div>
+    </fieldset>
+  </form>
+
+  {% if filter_error %}<p class="notice" role="alert">{{ filter_error }}</p>{% endif %}
+  {% if not database_message %}
+    <div class="results-heading" aria-live="polite">
+      <span>{{ lectures|length }} result{{ '' if lectures|length == 1 else 's' }}{% if query %} for “{{ query }}”{% endif %}</span>
+      {% if query %}<span>Sorted by relevance</span>{% endif %}
+    </div>
+    {% if lectures %}
+      <div class="lecture-grid library-grid">
+        {% for lecture in lectures %}{% include "partials/lecture_card.html" %}{% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">No lectures match your search and filters. Try changing them or select “Clear all”.</p>
+    {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

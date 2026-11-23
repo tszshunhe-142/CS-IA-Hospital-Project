@@ -1,0 +1,9 @@
+<article class="lecture-card">
+  <a class="lecture-card-link" href="{{ url_for('lecture_detail', lecture_id=lecture.lecture_id) }}" aria-label="Open {{ lecture.title }}">
+    <div class="video-thumb" aria-hidden="true"><span class="play-icon"></span></div>
+    <div class="lecture-card-body">
+      <h3>{{ lecture.title }}</h3><p>{{ lecture.department }} · {{ lecture.speaker }}</p>
+      <div class="card-meta"><time datetime="{{ lecture.lecture_date.isoformat() }}">{{ lecture.lecture_date.strftime('%b %d, %Y') }}</time><span>{{ lecture.category }}</span></div>
+    </div>
+  </a>
+</article>

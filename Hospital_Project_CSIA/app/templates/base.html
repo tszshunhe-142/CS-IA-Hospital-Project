@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Recorded health education lectures from hospital educators.">
+  <title>{% block title %}Hospital Health Education{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{{ url_for('home') }}">Hospital Health Education</a>
+    <nav aria-label="Main navigation">
+      <a class="{{ 'active' if active_page == 'home' else '' }}" href="{{ url_for('home') }}">Home</a>
+      <a class="{{ 'active' if active_page == 'lectures' else '' }}" href="{{ url_for('lecture_list') }}">Lectures</a>
+      <a href="{{ url_for('lecture_list') }}#search-form">Search</a>
+      <span class="nav-future" aria-disabled="true">Profile</span>
+      <span class="nav-future" aria-disabled="true">Admin</span>
+    </nav>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  <footer><span>Hospital Health Education</span><span>Health lectures&nbsp; / &nbsp;About</span></footer>
+</body>
+</html>

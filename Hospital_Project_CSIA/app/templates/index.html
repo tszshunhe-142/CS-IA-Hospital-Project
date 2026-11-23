@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% set active_page = 'home' %}
+{% block title %}Home | Hospital Health Education{% endblock %}
+{% block content %}
+<div class="page-shell home-page">
+  <section class="home-heading"><h1>Hospital Health Education</h1><p class="sr-only">Browse recorded educational lectures from hospital departments.</p></section>
+  <form class="home-search" action="{{ url_for('lecture_list') }}" method="get">
+    <label class="sr-only" for="home-query">Search health lectures</label>
+    <input id="home-query" type="search" name="q" placeholder="Search health lectures">
+    <button type="submit">Search</button>
+  </form>
+  {% if database_message %}<p class="notice" role="status">{{ database_message }}</p>{% endif %}
+  <div class="category-strip" aria-label="Lecture categories">
+    {% for category in ['Nutrition', 'Diabetes', 'Heart Health', 'Baby Care', 'Mental Health', 'More'] %}<span class="category-chip">{{ category }}</span>{% endfor %}
+  </div>
+  <section class="content-section">
+    <div class="section-heading"><h2>Latest Lectures</h2><a href="{{ url_for('lecture_list') }}">View all lectures <span aria-hidden="true">→</span></a></div>
+    {% if lectures %}<div class="lecture-grid lecture-grid-three">{% for lecture in lectures %}{% include "partials/lecture_card.html" %}{% endfor %}</div>
+    {% elif not database_message %}<p class="empty-state">No lectures have been added yet.</p>{% endif %}
+  </section>
+  {% if lectures %}
+    {% set topic_names = [] %}
+    {% for lecture in lectures %}{% for tag in lecture.tags.split(', ') if tag %}{% if tag not in topic_names %}{% set _ = topic_names.append(tag) %}{% endif %}{% endfor %}{% endfor %}
+    {% if topic_names %}<section class="topic-section"><h2>Popular Topics</h2><div class="topic-list">{% for topic in topic_names[:5] %}<span class="topic-chip">{{ topic|title }}</span>{% endfor %}</div></section>{% endif %}
+  {% endif %}
+  {% if more_lectures %}<section class="content-section more-section"><div class="section-heading"><h2>More Lectures</h2><a href="{{ url_for('lecture_list') }}">Browse library <span aria-hidden="true">→</span></a></div><div class="lecture-grid lecture-grid-two">{% for lecture in more_lectures %}{% include "partials/lecture_card.html" %}{% endfor %}</div></section>{% endif %}
+</div>
+{% endblock %}
